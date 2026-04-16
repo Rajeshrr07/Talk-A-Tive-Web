@@ -48,7 +48,7 @@ export default function GroupChatModal({
 
     try {
       setLoading(true);
-      const res = await fetch("http://localhost:5000/api/chats/group", {
+      const res = await fetch("https://talk-a-tive-web.onrender.com/api/chats/group", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

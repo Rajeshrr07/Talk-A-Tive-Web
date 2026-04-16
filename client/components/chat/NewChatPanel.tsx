@@ -35,7 +35,7 @@ export default function NewChatPanel({ onBack, onSelectUser }: NewChatPanelProps
       try {
         setSearching(true);
         const res = await fetch(
-          `http://localhost:5000/api/chats/search?search=${searchQuery}`,
+          `https://talk-a-tive-web.onrender.com/api/chats/search?search=${searchQuery}`,
           {
             headers: {
               Authorization: `Bearer ${user?.token}`,
@@ -60,7 +60,7 @@ export default function NewChatPanel({ onBack, onSelectUser }: NewChatPanelProps
       {/* Header */}
       <div className="h-[108px] bg-[#008069] dark:bg-[#202c33] flex items-end px-6 pb-4 shrink-0 transition-colors">
         <div className="flex items-center gap-6">
-          <button 
+          <button
             onClick={onBack}
             className="text-white hover:opacity-80 transition-opacity"
             title="Back"
@@ -75,7 +75,7 @@ export default function NewChatPanel({ onBack, onSelectUser }: NewChatPanelProps
       <div className="bg-white dark:bg-[#111b21] shrink-0 px-3 py-2 border-b border-[#f2f2f2] dark:border-zinc-800">
         <div className="flex items-center bg-[#f0f2f5] dark:bg-[#202c33] rounded-lg h-[35px] relative overflow-hidden transition-all">
           {searchFocused ? (
-            <button 
+            <button
               onClick={() => { setSearchFocused(false); setSearchQuery(""); }}
               className="absolute left-0 top-0 bottom-0 px-4 text-[#00a884] items-center flex animate-in fade-in"
             >
@@ -86,8 +86,8 @@ export default function NewChatPanel({ onBack, onSelectUser }: NewChatPanelProps
               <Search className="w-[16px] h-[16px]" />
             </div>
           )}
-          
-          <input 
+
+          <input
             className="w-full h-full bg-transparent border-none outline-none text-[15px] text-[#111b21] dark:text-[#e9edef] placeholder-[#54656f] dark:placeholder-[#8696a0] pl-[52px]"
             placeholder="Search name or email"
             onFocus={() => setSearchFocused(true)}
@@ -134,10 +134,10 @@ export default function NewChatPanel({ onBack, onSelectUser }: NewChatPanelProps
           </div>
         ) : (
           <div className="text-center text-[#667781] text-[14px] mt-10 p-6 flex flex-col items-center gap-4">
-             <div className="w-16 h-16 rounded-full bg-[#f0f2f5] dark:bg-[#202c33] flex items-center justify-center">
-                <Search className="w-6 h-6 opacity-20" />
-             </div>
-             <p>Search for a user to start a conversation</p>
+            <div className="w-16 h-16 rounded-full bg-[#f0f2f5] dark:bg-[#202c33] flex items-center justify-center">
+              <Search className="w-6 h-6 opacity-20" />
+            </div>
+            <p>Search for a user to start a conversation</p>
           </div>
         )}
       </div>

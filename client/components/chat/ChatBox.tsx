@@ -50,7 +50,7 @@ export default function ChatBox() {
   const recordingIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const docInputRef = useRef<HTMLInputElement>(null);
-  
+
   const { theme } = useTheme();
 
   // Multimedia Functions
@@ -74,7 +74,7 @@ export default function ChatBox() {
       setMediaRecorder(recorder);
       recorder.start();
       setIsRecording(true);
-      
+
       setRecordingTime(0);
       recordingIntervalRef.current = setInterval(() => {
         setRecordingTime((prev) => prev + 1);
@@ -116,13 +116,13 @@ export default function ChatBox() {
 
   const sendMultimediaMessage = async (file: File | Blob, type: "image" | "audio" | "file") => {
     if (!selectedChat || !user) return;
-    
+
     try {
       setIsUploading(true);
       const formData = new FormData();
       formData.append("file", file);
 
-      const uploadRes = await fetch("http://localhost:5000/api/upload", {
+      const uploadRes = await fetch("https://talk-a-tive-web.onrender.com/api/upload", {
         method: "POST",
         headers: {
           Authorization: `Bearer ${user.token}`,
@@ -131,11 +131,11 @@ export default function ChatBox() {
       });
 
       const uploadData = await uploadRes.json();
-      
+
       if (!uploadRes.ok) throw new Error(uploadData.message || "Upload failed");
 
       // Send message with file URL
-      const res = await fetch(`http://localhost:5000/api/messages`, {
+      const res = await fetch(`https://talk-a-tive-web.onrender.com/api/messages`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -178,7 +178,7 @@ export default function ChatBox() {
     try {
       setLoading(true);
       const res = await fetch(
-        `http://localhost:5000/api/messages/${selectedChat._id}`,
+        `https://talk-a-tive-web.onrender.com/api/messages/${selectedChat._id}`,
         {
           headers: {
             Authorization: `Bearer ${user.token}`,
@@ -205,7 +205,7 @@ export default function ChatBox() {
   useEffect(() => {
     setIsTyping(false);
     fetchMessages();
-    
+
     // Mark messages as read when opening chat
     if (selectedChat && user) {
       const socket = getSocket();
@@ -232,21 +232,21 @@ export default function ChatBox() {
         useChatStore.getState().addNotification(newMessageRecieved);
         // Emit delivered if message is for us
         if (user && newMessageRecieved.sender._id !== user._id) {
-            socket.emit("message delivered", {
-                messageId: newMessageRecieved._id,
-                chatId: newMessageRecieved.chat._id,
-                senderId: newMessageRecieved.sender._id
-            });
+          socket.emit("message delivered", {
+            messageId: newMessageRecieved._id,
+            chatId: newMessageRecieved.chat._id,
+            senderId: newMessageRecieved.sender._id
+          });
         }
       } else {
         addMessage(newMessageRecieved);
         // Emit read if we are in the chat
         if (user && newMessageRecieved.sender._id !== user._id) {
-            socket.emit("message read", {
-                messageId: newMessageRecieved._id,
-                chatId: newMessageRecieved.chat._id,
-                senderId: newMessageRecieved.sender._id
-            });
+          socket.emit("message read", {
+            messageId: newMessageRecieved._id,
+            chatId: newMessageRecieved.chat._id,
+            senderId: newMessageRecieved.sender._id
+          });
         }
       }
     };
@@ -256,9 +256,9 @@ export default function ChatBox() {
     };
 
     const handleMessagesSeen = (data: { chatId: string, userId: string, status: string }) => {
-       if (selectedChat && selectedChat._id === data.chatId) {
-          useChatStore.getState().markChatMessagesAsRead(data.chatId);
-       }
+      if (selectedChat && selectedChat._id === data.chatId) {
+        useChatStore.getState().markChatMessagesAsRead(data.chatId);
+      }
     };
 
     socket.on("message recieved", handleNewMessage);
@@ -315,7 +315,7 @@ export default function ChatBox() {
     try {
       const contentStr = newMessage;
       setNewMessage("");
-      const res = await fetch(`http://localhost:5000/api/messages`, {
+      const res = await fetch(`https://talk-a-tive-web.onrender.com/api/messages`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -342,7 +342,7 @@ export default function ChatBox() {
   const handleDeleteMessage = async (messageId: string) => {
     try {
       const res = await fetch(
-        `http://localhost:5000/api/messages/${messageId}`,
+        `https://talk-a-tive-web.onrender.com/api/messages/${messageId}`,
         {
           method: "DELETE",
           headers: {
@@ -371,7 +371,7 @@ export default function ChatBox() {
         <div className="flex flex-col h-full w-full">
           {/* Header */}
           <div className="h-[59px] shrink-0 border-b border-[#d1d7db] dark:border-zinc-800 flex items-center justify-between px-4 bg-[#f0f2f5] dark:bg-[#202c33]">
-            <div 
+            <div
               className="flex items-center gap-3 cursor-pointer transition-opacity hover:opacity-80"
               onClick={() => {
                 if (selectedChat.isGroupChat) {
@@ -416,20 +416,20 @@ export default function ChatBox() {
                     <Plus className="w-[20px] h-[20px]" />
                   </button>
                 )}
-              <button 
+              <button
                 onClick={() => setShowSearch(!showSearch)}
                 className="hover:text-zinc-900 dark:hover:text-white transition-colors"
                 title="Search"
               >
                 <Search className="w-[20px] h-[20px]" />
               </button>
-              
+
               <DropdownMenu>
                 <DropdownMenuTrigger className="hover:text-zinc-900 dark:hover:text-white transition-colors outline-none cursor-pointer">
                   <MoreVertical className="w-[20px] h-[20px]" />
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-48 bg-white dark:bg-[#233138] border-none shadow-lg mt-1 py-2">
-                  <DropdownMenuItem 
+                  <DropdownMenuItem
                     onClick={() => {
                       setSelectedChat(null);
                       setShowSearch(false);
@@ -448,14 +448,14 @@ export default function ChatBox() {
           {showSearch && (
             <div className="bg-[#f0f2f5] dark:bg-[#202c33] border-b border-[#d1d7db] dark:border-zinc-800 px-4 py-2 shrink-0 z-10 transition-all flex items-center shadow-sm">
               <div className="flex-1 flex items-center bg-white dark:bg-[#2a3942] rounded-lg h-[35px] relative overflow-hidden transition-all">
-                <button 
+                <button
                   onClick={() => { setShowSearch(false); setSearchQuery(""); }}
                   className="absolute left-0 top-0 bottom-0 px-4 text-[#54656f] dark:text-[#aebac1] hover:text-[#00a884] items-center flex transition-colors"
                   title="Close search"
                 >
                   <ArrowLeft className="w-[20px] h-[20px]" />
                 </button>
-                <input 
+                <input
                   className={`w-full h-full bg-transparent border-none outline-none text-[15px] text-[#111b21] dark:text-[#e9edef] placeholder-[#54656f] dark:placeholder-[#8696a0] pl-[52px]`}
                   placeholder="Search messages..."
                   autoFocus
@@ -478,33 +478,33 @@ export default function ChatBox() {
                 {messages
                   .filter((m) => m.content.toLowerCase().includes(searchQuery.toLowerCase()))
                   .map((m, i, filteredMessages) => {
-                  const isMyMsg = m.sender._id.toString() === user?._id;
-                  const isFirstMessageBySender = i === 0 || filteredMessages[i - 1].sender._id.toString() !== m.sender._id.toString();
+                    const isMyMsg = m.sender._id.toString() === user?._id;
+                    const isFirstMessageBySender = i === 0 || filteredMessages[i - 1].sender._id.toString() !== m.sender._id.toString();
 
-                  return (
-                    <div
-                      key={m._id}
-                      className={`flex ${isMyMsg ? "justify-end" : "justify-start"} ${isFirstMessageBySender ? 'mt-2' : 'mt-0.5'}`}
-                    >
+                    return (
                       <div
-                        className={`flex flex-col group relative max-w-[65%]`}
+                        key={m._id}
+                        className={`flex ${isMyMsg ? "justify-end" : "justify-start"} ${isFirstMessageBySender ? 'mt-2' : 'mt-0.5'}`}
                       >
-                        {/* Message Bubble */}
                         <div
-                          className={`rounded-lg min-h-12 max-auto px-2 pt-1.5 pb-2 shadow-sm text-[14.2px] leading-snug wrap-break-word whitespace-normal relative ${isMyMsg
-                            ? `bg-[#dcf8c6] dark:bg-[#005c4b] text-[#111b21] dark:text-[#e9edef] ${isFirstMessageBySender ? 'rounded-tr-none' : ''}`
-                            : `bg-white dark:bg-[#202c33] text-[#111b21] dark:text-[#e9edef] ${isFirstMessageBySender ? 'rounded-tl-none' : ''}`
-                            }`}
+                          className={`flex flex-col group relative max-w-[65%]`}
                         >
-                          {/* Tails */}
-                          {/* {isFirstMessageBySender && isMyMsg && (
+                          {/* Message Bubble */}
+                          <div
+                            className={`rounded-lg min-h-12 max-auto px-2 pt-1.5 pb-2 shadow-sm text-[14.2px] leading-snug wrap-break-word whitespace-normal relative ${isMyMsg
+                              ? `bg-[#dcf8c6] dark:bg-[#005c4b] text-[#111b21] dark:text-[#e9edef] ${isFirstMessageBySender ? 'rounded-tr-none' : ''}`
+                              : `bg-white dark:bg-[#202c33] text-[#111b21] dark:text-[#e9edef] ${isFirstMessageBySender ? 'rounded-tl-none' : ''}`
+                              }`}
+                          >
+                            {/* Tails */}
+                            {/* {isFirstMessageBySender && isMyMsg && (
                             <span className="absolute top-0 right-[-8px] block w-[8px] h-[13px] text-[#dcf8c6] dark:text-[#005c4b]">
                               <svg viewBox="0 0 8 13" width="8" height="13" className="">
                                 <path fill="currentColor" d="M1.533 2.568L8 11.193V0H2.812C1.042 0 .474 1.156 1.533 2.568z"></path>
                               </svg>
                             </span>
                           )} */}
-                          {/* {isFirstMessageBySender && !isMyMsg && (
+                            {/* {isFirstMessageBySender && !isMyMsg && (
                             <span className="absolute top-0 left-[-8px] block w-[8px] h-[13px] text-white dark:text-[#202c33]">
                               <svg viewBox="0 0 8 13" width="8" height="13" className="">
                                 <path fill="currentColor" d="M6.467 2.568L0 11.193V0h5.188c1.77 0 2.338 1.156 1.279 2.568z"></path>
@@ -512,108 +512,108 @@ export default function ChatBox() {
                             </span>
                           )} */}
 
-                          {selectedChat.isGroupChat && !isMyMsg && isFirstMessageBySender && (
-                            <p className="text-[12.5px] font-medium text-[#1fa855] dark:text-[#53bdeb] mb-1 px-1">
-                              {m.sender.name}
-                            </p>
-                          )}
+                            {selectedChat.isGroupChat && !isMyMsg && isFirstMessageBySender && (
+                              <p className="text-[12.5px] font-medium text-[#1fa855] dark:text-[#53bdeb] mb-1 px-1">
+                                {m.sender.name}
+                              </p>
+                            )}
 
-                          {/* Multimedia Content Rendering */}
-                          {m.type === "image" ? (
-                             <div className="mb-1 rounded-md overflow-hidden bg-zinc-100 dark:bg-zinc-800/50 cursor-pointer hover:opacity-95 transition-opacity">
-                                <img 
-                                  src={m.fileUrl} 
-                                  alt="Sent image" 
+                            {/* Multimedia Content Rendering */}
+                            {m.type === "image" ? (
+                              <div className="mb-1 rounded-md overflow-hidden bg-zinc-100 dark:bg-zinc-800/50 cursor-pointer hover:opacity-95 transition-opacity">
+                                <img
+                                  src={m.fileUrl}
+                                  alt="Sent image"
                                   className="max-h-[300px] w-full object-cover"
                                   onClick={() => window.open(m.fileUrl, '_blank')}
                                 />
                                 {m.content && m.content !== "📷 Photo" && (
                                   <p className="px-1 py-1.5 text-[14.2px]">{m.content}</p>
                                 )}
-                             </div>
-                          ) : m.type === "audio" ? (
-                             <div className="mb-1 py-2 px-1 min-w-[240px]">
+                              </div>
+                            ) : m.type === "audio" ? (
+                              <div className="mb-1 py-2 px-1 min-w-[240px]">
                                 <div className="flex items-center gap-3">
-                                   <div className="w-10 h-10 rounded-full bg-[#53bdeb]/10 flex items-center justify-center text-[#53bdeb] transition-transform hover:scale-110 cursor-pointer">
-                                      <Mic className="w-5 h-5" />
-                                   </div>
-                                   <audio controls className="h-8 w-full max-w-[200px] custom-audio">
-                                      <source src={m.fileUrl} type="audio/mpeg" />
-                                   </audio>
+                                  <div className="w-10 h-10 rounded-full bg-[#53bdeb]/10 flex items-center justify-center text-[#53bdeb] transition-transform hover:scale-110 cursor-pointer">
+                                    <Mic className="w-5 h-5" />
+                                  </div>
+                                  <audio controls className="h-8 w-full max-w-[200px] custom-audio">
+                                    <source src={m.fileUrl} type="audio/mpeg" />
+                                  </audio>
                                 </div>
-                             </div>
-                          ) : m.type === "file" ? (
-                             <div 
+                              </div>
+                            ) : m.type === "file" ? (
+                              <div
                                 onClick={() => window.open(m.fileUrl, '_blank')}
                                 className="mb-2 flex items-center gap-3 p-3 rounded-lg bg-[#0000000a] dark:bg-[#ffffff0a] cursor-pointer hover:bg-[#00000015] dark:hover:bg-[#ffffff15] transition-colors"
-                             >
+                              >
                                 <div className="w-10 h-10 rounded-lg bg-[#5f66cd] flex items-center justify-center text-white shrink-0">
-                                   <FileIcon className="w-6 h-6" />
+                                  <FileIcon className="w-6 h-6" />
                                 </div>
                                 <div className="flex-1 min-w-0">
-                                   <p className="truncate text-[14px] font-medium">Message Attachment</p>
-                                   <p className="text-[12px] opacity-70 uppercase">File</p>
+                                  <p className="truncate text-[14px] font-medium">Message Attachment</p>
+                                  <p className="text-[12px] opacity-70 uppercase">File</p>
                                 </div>
-                             </div>
-                          ) : (
-                            <span className="break-words mr-10">{m.content}</span>
-                          )}
-
-                          <div className={`absolute right-1.5 bottom-1 flex items-center justify-end gap-[3px] ${m.type === 'image' && !m.content?.includes('📷') ? 'bg-black/30 px-1.5 py-0.5 rounded-full text-white' : ''}`}>
-                            <span
-                              className={`text-[11px] font-medium  ${isMyMsg
-                                ? "text-[#667781] dark:text-[#ffffff99]"
-                                : "text-[#667781] dark:text-[#8696a0]"
-                                }`}
-                            >
-                              {new Date(m.createdAt).toLocaleTimeString([], {
-                                hour: "2-digit",
-                                minute: "2-digit",
-                              })}
-                            </span>
-                            {isMyMsg && (
-                              <span className={`text-[15px] -mt-[3px] flex items-center ${m.status === 'read' ? 'text-[#53bdeb]' : 'text-[#8696a0] dark:text-[#ffffff99]'}`}>
-                                {m.status === "sent" ? (
-                                  <span title="Sent">✓</span>
-                                ) : (
-                                  <span title={m.status === 'read' ? "Read" : "Delivered"}>✓✓</span>
-                                )}
-                              </span>
+                              </div>
+                            ) : (
+                              <span className="break-words mr-10">{m.content}</span>
                             )}
-                          </div>
-                        </div>
 
-                        {/* Menu context overlay on hover */}
-                        {isMyMsg && (
-                          <div className="absolute top-1 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                            <div className="relative">
-                              <button
-                                onClick={() =>
-                                  setMessageMenu(
-                                    messageMenu === m._id ? null : m._id
-                                  )
-                                }
-                                className="text-zinc-500 hover:text-zinc-700 dark:text-zinc-400 bg-white/50 rounded-full cursor-pointer"
+                            <div className={`absolute right-1.5 bottom-1 flex items-center justify-end gap-[3px] ${m.type === 'image' && !m.content?.includes('📷') ? 'bg-black/30 px-1.5 py-0.5 rounded-full text-white' : ''}`}>
+                              <span
+                                className={`text-[11px] font-medium  ${isMyMsg
+                                  ? "text-[#667781] dark:text-[#ffffff99]"
+                                  : "text-[#667781] dark:text-[#8696a0]"
+                                  }`}
                               >
-                                <svg viewBox="0 0 19 20" width="19" height="20" className=""><path fill="currentColor" d="M3.8 6.7l5.7 5.7 5.7-5.7 1.6 1.6-7.3 7.2-7.3-7.2 1.6-1.6z"></path></svg>
-                              </button>
-                              {messageMenu === m._id && (
-                                <div className="absolute top-full right-0 bg-white dark:bg-[#233138] rounded-md shadow-lg border border-transparent mt-2 z-10 py-2 w-32">
-                                  <button
-                                    onClick={() => handleDeleteMessage(m._id)}
-                                    className="flex items-center w-full px-4 py-2 hover:bg-[#f5f6f6] dark:hover:bg-[#182229] text-[14.5px] text-[#3b4a54] dark:text-[#d1d7db]"
-                                  >
-                                    Delete
-                                  </button>
-                                </div>
+                                {new Date(m.createdAt).toLocaleTimeString([], {
+                                  hour: "2-digit",
+                                  minute: "2-digit",
+                                })}
+                              </span>
+                              {isMyMsg && (
+                                <span className={`text-[15px] -mt-[3px] flex items-center ${m.status === 'read' ? 'text-[#53bdeb]' : 'text-[#8696a0] dark:text-[#ffffff99]'}`}>
+                                  {m.status === "sent" ? (
+                                    <span title="Sent">✓</span>
+                                  ) : (
+                                    <span title={m.status === 'read' ? "Read" : "Delivered"}>✓✓</span>
+                                  )}
+                                </span>
                               )}
                             </div>
                           </div>
-                        )}
+
+                          {/* Menu context overlay on hover */}
+                          {isMyMsg && (
+                            <div className="absolute top-1 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                              <div className="relative">
+                                <button
+                                  onClick={() =>
+                                    setMessageMenu(
+                                      messageMenu === m._id ? null : m._id
+                                    )
+                                  }
+                                  className="text-zinc-500 hover:text-zinc-700 dark:text-zinc-400 bg-white/50 rounded-full cursor-pointer"
+                                >
+                                  <svg viewBox="0 0 19 20" width="19" height="20" className=""><path fill="currentColor" d="M3.8 6.7l5.7 5.7 5.7-5.7 1.6 1.6-7.3 7.2-7.3-7.2 1.6-1.6z"></path></svg>
+                                </button>
+                                {messageMenu === m._id && (
+                                  <div className="absolute top-full right-0 bg-white dark:bg-[#233138] rounded-md shadow-lg border border-transparent mt-2 z-10 py-2 w-32">
+                                    <button
+                                      onClick={() => handleDeleteMessage(m._id)}
+                                      className="flex items-center w-full px-4 py-2 hover:bg-[#f5f6f6] dark:hover:bg-[#182229] text-[14.5px] text-[#3b4a54] dark:text-[#d1d7db]"
+                                    >
+                                      Delete
+                                    </button>
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+                          )}
+                        </div>
                       </div>
-                    </div>
-                  );
-                })}
+                    );
+                  })}
               </div>
             ) : (
               <div className="text-center text-[#667781] dark:text-zinc-500 text-sm flex flex-col items-center justify-center h-full opacity-60">
@@ -626,28 +626,28 @@ export default function ChatBox() {
           {/* Input Area */}
           <div className="min-h-[62px] border-t border-[#d1d7db] dark:border-zinc-800 px-4 py-2 bg-[#f0f2f5] dark:bg-[#202c33] flex items-center justify-between z-10 shrink-0">
             {isRecording ? (
-               <div className="flex-1 flex items-center justify-between animate-in slide-in-from-right duration-300">
-                  <button onClick={cancelRecording} className="p-2 text-red-500 hover:bg-red-50 dark:hover:bg-red-950/20 rounded-full transition-colors">
-                    <Trash2 className="w-6 h-6" />
-                  </button>
-                  <div className="flex items-center gap-3 bg-white dark:bg-[#2a3942] rounded-full px-6 py-2 flex-1 mx-4 shadow-sm border border-[#d1d7db] dark:border-zinc-800">
-                    <div className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
-                    <span className="text-[15px] font-medium text-zinc-700 dark:text-[#e9edef] min-w-[45px]">
-                      {Math.floor(recordingTime / 60)}:{(recordingTime % 60).toString().padStart(2, '0')}
-                    </span>
-                    <div className="flex-1 h-1 bg-[#d1d7db] dark:bg-zinc-700 rounded-full overflow-hidden">
-                       <div className="h-full bg-red-500 animate-pulse" style={{ width: '100%' }} />
-                    </div>
+              <div className="flex-1 flex items-center justify-between animate-in slide-in-from-right duration-300">
+                <button onClick={cancelRecording} className="p-2 text-red-500 hover:bg-red-50 dark:hover:bg-red-950/20 rounded-full transition-colors">
+                  <Trash2 className="w-6 h-6" />
+                </button>
+                <div className="flex items-center gap-3 bg-white dark:bg-[#2a3942] rounded-full px-6 py-2 flex-1 mx-4 shadow-sm border border-[#d1d7db] dark:border-zinc-800">
+                  <div className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
+                  <span className="text-[15px] font-medium text-zinc-700 dark:text-[#e9edef] min-w-[45px]">
+                    {Math.floor(recordingTime / 60)}:{(recordingTime % 60).toString().padStart(2, '0')}
+                  </span>
+                  <div className="flex-1 h-1 bg-[#d1d7db] dark:bg-zinc-700 rounded-full overflow-hidden">
+                    <div className="h-full bg-red-500 animate-pulse" style={{ width: '100%' }} />
                   </div>
-                  <button onClick={stopRecording} className="p-2 bg-[#00a884] text-white rounded-full hover:bg-[#008f72] transition-colors shadow-md">
-                    <Send className="w-6 h-6 rotate-[-45deg] translate-x-0.5" />
-                  </button>
-               </div>
+                </div>
+                <button onClick={stopRecording} className="p-2 bg-[#00a884] text-white rounded-full hover:bg-[#008f72] transition-colors shadow-md">
+                  <Send className="w-6 h-6 rotate-[-45deg] translate-x-0.5" />
+                </button>
+              </div>
             ) : (
               <>
                 <div className="flex items-center gap-3 text-[#54656f] dark:text-[#aebac1] relative">
-                  <button 
-                    type="button" 
+                  <button
+                    type="button"
                     className={`p-1 transition-colors ${isEmojiPickerOpen ? "text-[#00a884]" : "hover:text-zinc-900 dark:hover:bg-zinc-800"}`}
                     onClick={() => setIsEmojiPickerOpen(!isEmojiPickerOpen)}
                   >
@@ -667,27 +667,27 @@ export default function ChatBox() {
                       </div>
                     </div>
                   )}
-                  
+
                   <DropdownMenu>
                     <DropdownMenuTrigger className="p-1 hover:text-zinc-900 dark:hover:text-white transition-colors outline-none cursor-pointer">
                       <Plus className="w-[26px] h-[26px] transition-transform hover:rotate-90" />
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="start" side="top" className="w-48 bg-white dark:bg-[#233138] border-none shadow-xl mb-2 py-2 rounded-xl scale-in-center">
-                      <DropdownMenuItem 
+                      <DropdownMenuItem
                         onClick={() => fileInputRef.current?.click()}
                         className="cursor-pointer text-[#3b4a54] dark:text-[#d1d7db] hover:bg-[#f5f6f6] dark:hover:bg-[#182229] py-3 px-6 flex items-center gap-3"
                       >
                         <div className="w-8 h-8 rounded-full bg-[#bf59cf] flex items-center justify-center text-white">
-                           <ImageIcon className="w-4 h-4" />
+                          <ImageIcon className="w-4 h-4" />
                         </div>
                         Photos & Videos
                       </DropdownMenuItem>
-                      <DropdownMenuItem 
+                      <DropdownMenuItem
                         onClick={() => docInputRef.current?.click()}
                         className="cursor-pointer text-[#3b4a54] dark:text-[#d1d7db] hover:bg-[#f5f6f6] dark:hover:bg-[#182229] py-3 px-6 flex items-center gap-3"
                       >
                         <div className="w-8 h-8 rounded-full bg-[#5f66cd] flex items-center justify-center text-white">
-                           <FileIcon className="w-4 h-4" />
+                          <FileIcon className="w-4 h-4" />
                         </div>
                         Document
                       </DropdownMenuItem>
@@ -695,18 +695,18 @@ export default function ChatBox() {
                   </DropdownMenu>
 
                   {/* Hidden Inputs */}
-                  <input 
-                    type="file" 
-                    ref={fileInputRef} 
-                    hidden 
-                    accept="image/*,video/*" 
+                  <input
+                    type="file"
+                    ref={fileInputRef}
+                    hidden
+                    accept="image/*,video/*"
                     onChange={(e) => handleFileUpload(e, "image")}
                   />
-                  <input 
-                    type="file" 
-                    ref={docInputRef} 
-                    hidden 
-                    accept=".pdf,.doc,.docx,.txt" 
+                  <input
+                    type="file"
+                    ref={docInputRef}
+                    hidden
+                    accept=".pdf,.doc,.docx,.txt"
                     onChange={(e) => handleFileUpload(e, "file")}
                   />
                 </div>
@@ -726,9 +726,9 @@ export default function ChatBox() {
                       placeholder="Type a message"
                     />
                     {isUploading && (
-                       <div className="absolute right-3 top-1/2 -translate-y-1/2">
-                          <Loader2 className="w-4 h-4 animate-spin text-[#00a884]" />
-                       </div>
+                      <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                        <Loader2 className="w-4 h-4 animate-spin text-[#00a884]" />
+                      </div>
                     )}
                   </div>
                 </form>
@@ -774,7 +774,7 @@ export default function ChatBox() {
               Send and receive messages without keeping your phone online.<br />
               Use Talk-A-Tive on up to 4 linked devices and 1 phone at the same time.
             </p>
-      
+
           </div>
         </div>
       )}

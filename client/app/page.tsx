@@ -20,31 +20,52 @@ export default function Home() {
     }
   }, [user, router]);
 
-  if (!mounted) return null; // Avoid hydration mismatch
+  if (!mounted) return null;
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center p-6 bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 dark:from-indigo-950 dark:via-purple-950 dark:to-pink-950">
-      <div className="w-full max-w-md space-y-6">
-        <div className="text-center">
-          <h1 className="text-4xl font-extrabold tracking-tight text-white mb-2 shadow-sm drop-shadow-md">Talk-A-Tive</h1>
-          <p className="text-white/80 font-medium">Connect with friends in real-time.</p>
+    <div className="relative flex min-h-screen flex-col items-center justify-center p-6 overflow-hidden">
+      {/* Mesh Gradient Background (Light) */}
+      <div className="absolute inset-0 -z-10 bg-zinc-50">
+        <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] rounded-full bg-indigo-200/40 blur-[120px]" />
+        <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] rounded-full bg-pink-200/40 blur-[120px]" />
+        <div className="absolute top-[20%] right-[10%] w-[40%] h-[40%] rounded-full bg-blue-100/30 blur-[100px]" />
+      </div>
+
+      <div className="w-full max-w-md space-y-8 animate-in fade-in zoom-in duration-700">
+        <div className="text-center space-y-2">
+          <h1 className="text-5xl font-black tracking-tight text-zinc-900 mb-2 drop-shadow-sm bg-clip-text text-transparent bg-gradient-to-br from-indigo-600 to-purple-700">
+            Talk-A-Tive
+          </h1>
+          <p className="text-zinc-500 font-medium text-lg">
+            Connect with friends in real-time.
+          </p>
         </div>
 
-        <Card className="border-0 shadow-2xl bg-white/95 dark:bg-zinc-900/95 backdrop-blur-sm">
-          <CardHeader className="pb-4">
-            <CardTitle>Welcome</CardTitle>
-            <CardDescription>Sign in to your account or create a new one.</CardDescription>
+        <Card className="glass border-white shadow-2xl overflow-hidden">
+          <CardHeader className="pb-4 text-center">
+            <CardTitle className="text-2xl font-bold text-zinc-900">Welcome Back</CardTitle>
+            <CardDescription className="text-zinc-500">Sign in to your account or create a new one.</CardDescription>
           </CardHeader>
           <CardContent>
             <Tabs defaultValue="login" className="w-full">
-              <TabsList className="grid w-full grid-cols-2 mb-6">
-                <TabsTrigger value="login">Login</TabsTrigger>
-                <TabsTrigger value="signup">Sign Up</TabsTrigger>
+              <TabsList className="grid w-full grid-cols-2 mb-8 bg-zinc-100/80 p-1 rounded-xl">
+                <TabsTrigger 
+                  value="login" 
+                  className="cursor-pointer rounded-lg data-[state=active]:bg-white data-[state=active]:text-zinc-900 data-[state=active]:shadow-sm transition-all duration-300"
+                >
+                  Login
+                </TabsTrigger>
+                <TabsTrigger 
+                  value="signup"
+                  className="cursor-pointer rounded-lg data-[state=active]:bg-white data-[state=active]:text-zinc-900 data-[state=active]:shadow-sm transition-all duration-300"
+                >
+                  Sign Up
+                </TabsTrigger>
               </TabsList>
-              <TabsContent value="login" className="mt-0">
+              <TabsContent value="login" className="mt-0 ring-offset-0 focus-visible:ring-0">
                 <Login />
               </TabsContent>
-              <TabsContent value="signup" className="mt-0">
+              <TabsContent value="signup" className="mt-0 ring-offset-0 focus-visible:ring-0">
                 <Signup />
               </TabsContent>
             </Tabs>

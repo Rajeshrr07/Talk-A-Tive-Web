@@ -32,7 +32,7 @@ export default function SearchUsers({ onSelectUser }: SearchUsersProps) {
       try {
         setLoading(true);
         const res = await fetch(
-          `http://localhost:5000/api/chats/search?search=${search}`,
+          `https://talk-a-tive-web.onrender.com/api/chats/search?search=${search}`,
           {
             headers: {
               Authorization: `Bearer ${user?.token}`,

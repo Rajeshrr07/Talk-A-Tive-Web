@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
-const BACKEND_API_URL = "http://localhost:5000";
+const BACKEND_API_URL = "https://talk-a-tive-web.onrender.com";
 
 const createProxyResponse = async (backendResponse: Response) => {
   const text = await backendResponse.text();

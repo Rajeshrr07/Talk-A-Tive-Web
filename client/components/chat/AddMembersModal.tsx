@@ -58,7 +58,7 @@ export default function AddMembersModal({
       setLoading(true);
 
       for (const selectedUser of selectedUsers) {
-        const res = await fetch("http://localhost:5000/api/chats/groupadd", {
+        const res = await fetch("https://talk-a-tive-web.onrender.com/api/chats/groupadd", {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",

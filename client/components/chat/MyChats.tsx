@@ -40,7 +40,7 @@ export default function MyChats() {
     if (!user) return;
     try {
       setLoading(true);
-      const res = await fetch("http://localhost:5000/api/chats", {
+      const res = await fetch("https://talk-a-tive-web.onrender.com/api/chats", {
         headers: {
           Authorization: `Bearer ${user.token}`,
         },
@@ -76,7 +76,7 @@ export default function MyChats() {
       try {
         setSearching(true);
         const res = await fetch(
-          `http://localhost:5000/api/chats/search?search=${searchQuery}`,
+          `https://talk-a-tive-web.onrender.com/api/chats/search?search=${searchQuery}`,
           {
             headers: {
               Authorization: `Bearer ${user?.token}`,
@@ -100,7 +100,7 @@ export default function MyChats() {
     if (!user) return;
 
     try {
-      const res = await fetch("http://localhost:5000/api/chats", {
+      const res = await fetch("https://talk-a-tive-web.onrender.com/api/chats", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -188,7 +188,7 @@ export default function MyChats() {
           onProfileClick={() => setActivePanel("profile")}
         />
       ) : activePanel === "new-chat" ? (
-        <NewChatPanel 
+        <NewChatPanel
           onBack={() => setActivePanel("chats")}
           onSelectUser={(user) => {
             handleSelectUserForChat(user);
