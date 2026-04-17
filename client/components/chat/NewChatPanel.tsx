@@ -62,7 +62,7 @@ export default function NewChatPanel({ onBack, onSelectUser }: NewChatPanelProps
         <div className="flex items-center gap-6">
           <button
             onClick={onBack}
-            className="text-white hover:opacity-80 transition-opacity"
+            className="cursor-pointer text-white hover:opacity-80 transition-opacity"
             title="Back"
           >
             <ArrowLeft className="w-6 h-6" />

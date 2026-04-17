@@ -34,7 +34,8 @@ interface ChatState {
   addNotification: (notification: Message) => void;
   removeNotification: (notificationId: string) => void;
   updateMessageStatus: (messageId: string, status: "sent" | "delivered" | "read") => void;
-  markChatMessagesAsRead: (chatId: string) => void;
+  markChatMessagesAsRead: (chatId: string, currentUserId?: string) => void;
+  markSentMessagesAsRead: (chatId: string, readerId: string) => void;
 }
 
 export const useChatStore = create<ChatState>((set) => ({
@@ -83,13 +84,38 @@ export const useChatStore = create<ChatState>((set) => ({
           : chat
       )
     })),
-  markChatMessagesAsRead: (chatId) =>
+  markChatMessagesAsRead: (chatId, currentUserId) =>
     set((state) => ({
       messages: state.messages.map((m) =>
-        m.chat._id === chatId && m.status !== "read" ? { ...m, status: "read" } : m
+        m.chat._id === chatId && 
+        m.status !== "read" && 
+        (!currentUserId || m.sender._id !== currentUserId)
+          ? { ...m, status: "read" } 
+          : m
       ),
       chats: state.chats.map((chat) => 
-        chat._id === chatId && chat.latestMessage && chat.latestMessage.status !== "read"
+        chat._id === chatId && 
+        chat.latestMessage && 
+        chat.latestMessage.status !== "read" &&
+        (!currentUserId || chat.latestMessage.sender._id !== currentUserId)
+          ? { ...chat, latestMessage: { ...chat.latestMessage, status: "read" } }
+          : chat
+      )
+    })),
+  markSentMessagesAsRead: (chatId, readerId) =>
+    set((state) => ({
+      messages: state.messages.map((m) =>
+        m.chat._id === chatId && 
+        m.status !== "read" && 
+        m.sender._id !== readerId
+          ? { ...m, status: "read" } 
+          : m
+      ),
+      chats: state.chats.map((chat) => 
+        chat._id === chatId && 
+        chat.latestMessage && 
+        chat.latestMessage.status !== "read" &&
+        chat.latestMessage.sender._id !== readerId
           ? { ...chat, latestMessage: { ...chat.latestMessage, status: "read" } }
           : chat
       )

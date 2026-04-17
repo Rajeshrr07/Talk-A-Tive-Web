@@ -139,14 +139,14 @@ export default function MyChats() {
         <div className="flex items-center gap-2 text-[#54656f] dark:text-[#aebac1]">
           <button
             onClick={() => setShowGroupModal(true)}
-            className="p-2 rounded-full hover:bg-zinc-200 dark:hover:bg-zinc-800 transition-colors"
+            className="cursor-pointer p-2 rounded-full hover:bg-zinc-200 dark:hover:bg-zinc-800 transition-colors"
             title="New Group"
           >
             <Users className="w-[20px] h-[20px]" />
           </button>
           <button
             onClick={() => setActivePanel("new-chat")}
-            className="p-2 rounded-full hover:bg-zinc-200 dark:hover:bg-zinc-800 transition-colors"
+            className="cursor-pointer p-2 rounded-full hover:bg-zinc-200 dark:hover:bg-zinc-800 transition-colors"
             title="New Chat"
           >
             <MessageSquareText className="w-[20px] h-[20px]" />

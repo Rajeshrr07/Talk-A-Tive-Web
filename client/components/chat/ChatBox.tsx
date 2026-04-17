@@ -213,7 +213,7 @@ export default function ChatBox() {
         chatId: selectedChat._id,
         userId: user._id
       });
-      useChatStore.getState().markChatMessagesAsRead(selectedChat._id);
+      useChatStore.getState().markChatMessagesAsRead(selectedChat._id, user._id);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedChat]);
@@ -257,7 +257,13 @@ export default function ChatBox() {
 
     const handleMessagesSeen = (data: { chatId: string, userId: string, status: string }) => {
       if (selectedChat && selectedChat._id === data.chatId) {
-        useChatStore.getState().markChatMessagesAsRead(data.chatId);
+        if (data.userId !== user?._id) {
+          // Someone else saw our messages
+          useChatStore.getState().markSentMessagesAsRead(data.chatId, data.userId);
+        } else {
+          // WE saw their messages (confirmation from server)
+          useChatStore.getState().markChatMessagesAsRead(data.chatId, user?._id);
+        }
       }
     };
 
@@ -786,7 +792,7 @@ export default function ChatBox() {
             onClose={() => setShowAddMembers(false)}
             chatId={selectedChat._id}
             currentMembers={selectedChat.users}
-            onMembersAdded={handleRefresh}
+          // onMembersAdded={handleRefresh}
           />
           <GroupInfoModal
             isOpen={showGroupInfo}
