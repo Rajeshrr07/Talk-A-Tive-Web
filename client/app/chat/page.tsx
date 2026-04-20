@@ -3,12 +3,14 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/store/useAuthStore";
+import { useChatStore } from "@/store/useChatStore";
 import MyChats from "@/components/chat/MyChats";
 import ChatBox from "@/components/chat/ChatBox";
 
 export default function ChatPage() {
   const router = useRouter();
   const { user } = useAuthStore();
+  const { selectedChat } = useChatStore();
 
   useEffect(() => {
     if (!user && window.localStorage.getItem("userInfo") === null) {
@@ -27,12 +29,18 @@ export default function ChatPage() {
       <div className="relative z-10 w-full h-full max-w-[1600px] shadow-none border-none 2xl:shadow-[0_6px_18px_rgba(11,20,26,0.05)] bg-[#111b21] 2xl:h-[calc(100vh-38px)] 2xl:my-[19px] 2xl:mx-auto flex flex-1">
         
         {/* Left Sidebar Pane */}
-        <div className="w-[30%] min-w-[340px] max-w-[420px] flex shrink-0 flex-col bg-white dark:bg-[#111b21] border-r border-[#d1d7db] dark:border-zinc-800/80">
+        <div className={`
+          ${selectedChat ? 'hidden md:flex' : 'flex'} 
+          w-full md:w-[30%] md:min-w-[340px] md:max-w-[420px] shrink-0 flex-col bg-white dark:bg-[#111b21] border-r border-[#d1d7db] dark:border-zinc-800/80
+        `}>
           <MyChats />
         </div>
 
         {/* Right Application / Chat Pane */}
-        <div className="flex flex-1 flex-col bg-[#efeae2] dark:bg-[#0b141a] overflow-hidden relative min-w-[400px]">
+        <div className={`
+          ${!selectedChat ? 'hidden md:flex' : 'flex'} 
+          flex-1 flex-col bg-[#efeae2] dark:bg-[#0b141a] overflow-hidden relative
+        `}>
           <ChatBox />
         </div>
       </div>

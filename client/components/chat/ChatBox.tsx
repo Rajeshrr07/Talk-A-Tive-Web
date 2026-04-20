@@ -377,8 +377,17 @@ export default function ChatBox() {
         <div className="flex flex-col h-full w-full">
           {/* Header */}
           <div className="h-[59px] shrink-0 border-b border-[#d1d7db] dark:border-zinc-800 flex items-center justify-between px-4 bg-[#f0f2f5] dark:bg-[#202c33]">
-            <div
-              className="flex items-center gap-3 cursor-pointer transition-opacity hover:opacity-80"
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => setSelectedChat(null)}
+                className="md:hidden p-1 -ml-1 mr-1 text-[#54656f] dark:text-[#aebac1] hover:bg-zinc-200 dark:hover:bg-zinc-800 rounded-full transition-colors"
+                title="Back to chats"
+              >
+                <ArrowLeft className="w-[20px] h-[20px]" />
+              </button>
+              
+              <div
+                className="flex items-center gap-3 cursor-pointer transition-opacity hover:opacity-80"
               onClick={() => {
                 if (selectedChat.isGroupChat) {
                   setShowGroupInfo(true);
@@ -410,6 +419,7 @@ export default function ChatBox() {
                 </span>
               </div>
             </div>
+          </div>
 
             <div className="flex items-center gap-4 text-[#54656f] dark:text-[#aebac1]">
               {selectedChat.isGroupChat &&
